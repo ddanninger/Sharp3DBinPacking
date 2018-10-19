@@ -167,10 +167,13 @@ namespace Sharp3DBinPacking
             }
         }
 
-        public static BinPackAlgorithmFactory[] GetDefaultAlgorithmFactories()
+        public static BinPackAlgorithmFactory[] GetDefaultAlgorithmFactories(bool allowAllOrientations)
         {
-            return new BinPackAlgorithmFactory[]
+
+            if (allowAllOrientations)
             {
+                return new BinPackAlgorithmFactory[]
+                {
                 parameter => new BinPackShelfAlgorithm(
                     parameter,
                     FreeRectChoiceHeuristic.RectBestAreaFit,
@@ -189,12 +192,25 @@ namespace Sharp3DBinPacking
                     parameter,
                     FreeCuboidChoiceHeuristic.CuboidMinHeight,
                     GuillotineSplitHeuristic.SplitShorterLeftoverAxis)
-            };
+                };
+            }
+            else
+                return new BinPackAlgorithmFactory[]
+                {
+                parameter => new BinPackGuillotineAlgorithm(
+                    parameter,
+                    FreeCuboidChoiceHeuristic.CuboidMinHeight,
+                    GuillotineSplitHeuristic.SplitLongerLeftoverAxis),
+                parameter => new BinPackGuillotineAlgorithm(
+                    parameter,
+                    FreeCuboidChoiceHeuristic.CuboidMinHeight,
+                    GuillotineSplitHeuristic.SplitShorterLeftoverAxis)
+                };
         }
 
-        public static IBinPacker GetDefault(BinPackerVerifyOption verifyOption)
+        public static IBinPacker GetDefault(BinPackerVerifyOption verifyOption, bool allowAllOrientations)
         {
-            return new BinPacker(verifyOption, GetDefaultAlgorithmFactories());
+            return new BinPacker(verifyOption, GetDefaultAlgorithmFactories(allowAllOrientations));
         }
     }
 }

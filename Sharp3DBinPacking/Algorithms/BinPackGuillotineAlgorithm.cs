@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Sharp3DBinPacking.Algorithms
 {
@@ -85,7 +84,7 @@ namespace Sharp3DBinPacking.Algorithms
                     depth <= freeCuboid.Depth)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientZ)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -106,7 +105,7 @@ namespace Sharp3DBinPacking.Algorithms
                     _parameter.AllowRotateVertically)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientY)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -126,7 +125,7 @@ namespace Sharp3DBinPacking.Algorithms
                     width <= freeCuboid.Depth)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientX)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -147,7 +146,7 @@ namespace Sharp3DBinPacking.Algorithms
                     _parameter.AllowRotateVertically)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientY)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -168,7 +167,7 @@ namespace Sharp3DBinPacking.Algorithms
                     _parameter.AllowRotateVertically)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientZ)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -189,7 +188,7 @@ namespace Sharp3DBinPacking.Algorithms
                     _parameter.AllowRotateVertically)
                 {
                     var score = ScoreByHeuristic(cuboid, freeCuboid, cuboidChoice);
-                    if (score < bestScore)
+                    if (score < bestScore && cuboid.AllowOrientX)
                     {
                         cuboid.IsPlaced = true;
                         cuboid.X = freeCuboid.X;
@@ -262,27 +261,33 @@ namespace Sharp3DBinPacking.Algorithms
             Cuboid placedCuboid,
             bool splitHorizontal)
         {
-            var bottom = new Cuboid();
-            bottom.X = freeCuboid.X;
-            bottom.Y = freeCuboid.Y;
-            bottom.Z = freeCuboid.Z + placedCuboid.Depth;
-            bottom.Depth = freeCuboid.Depth - placedCuboid.Depth;
-            bottom.Height = placedCuboid.Height;
+            var bottom = new Cuboid
+            {
+                X = freeCuboid.X,
+                Y = freeCuboid.Y,
+                Z = freeCuboid.Z + placedCuboid.Depth,
+                Depth = freeCuboid.Depth - placedCuboid.Depth,
+                Height = placedCuboid.Height
+            };
 
-            var right = new Cuboid();
-            right.X = freeCuboid.X + placedCuboid.Width;
-            right.Y = freeCuboid.Y;
-            right.Z = freeCuboid.Z;
-            right.Width = freeCuboid.Width - placedCuboid.Width;
-            right.Height = placedCuboid.Height;
+            var right = new Cuboid
+            {
+                X = freeCuboid.X + placedCuboid.Width,
+                Y = freeCuboid.Y,
+                Z = freeCuboid.Z,
+                Width = freeCuboid.Width - placedCuboid.Width,
+                Height = placedCuboid.Height
+            };
 
-            var top = new Cuboid();
-            top.X = freeCuboid.X;
-            top.Y = freeCuboid.Y + placedCuboid.Height;
-            top.Z = freeCuboid.Z;
-            top.Height = freeCuboid.Height - placedCuboid.Height;
-            top.Width = freeCuboid.Width;
-            top.Depth = freeCuboid.Depth;
+            var top = new Cuboid
+            {
+                X = freeCuboid.X,
+                Y = freeCuboid.Y + placedCuboid.Height,
+                Z = freeCuboid.Z,
+                Height = freeCuboid.Height - placedCuboid.Height,
+                Width = freeCuboid.Width,
+                Depth = freeCuboid.Depth
+            };
 
             if (splitHorizontal)
             {

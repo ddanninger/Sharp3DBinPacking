@@ -108,7 +108,6 @@ namespace Sharp3DBinPacking.Algorithms
                     }
                 }
             }
-
             // The rectangle didn't fit.
         }
 
@@ -130,9 +129,9 @@ namespace Sharp3DBinPacking.Algorithms
                 (_parameter.AllowRotateVertically || max == cuboid.Height))
             {
                 var maxVerticalRect = new Rectangle(middle, min, 0, 0);
-                var freeRectIndex = 0;
-                shelf.Guillotine.Insert(maxVerticalRect, _rectChoice, out freeRectIndex);
-                if (maxVerticalRect.IsPlaced)
+                shelf.Guillotine.Insert(maxVerticalRect, _rectChoice, out int freeRectIndex);
+                if (maxVerticalRect.IsPlaced
+                    && cuboid.AllowPlacing(maxVerticalRect.Width, max, maxVerticalRect.Height))
                 {
                     shelf.Guillotine.InsertOnPosition(maxVerticalRect, _splitMethod, freeRectIndex);
                     cuboid.IsPlaced = true;
@@ -144,15 +143,14 @@ namespace Sharp3DBinPacking.Algorithms
                     return;
                 }
             }
-
             // Set cuboid's second longest egde vertically
             if (middle <= shelf.Height &&
                 (_parameter.AllowRotateVertically || middle == cuboid.Height))
             {
                 var middleVerticalRect = new Rectangle(min, max, 0, 0);
-                var freeRectIndex = 0;
-                shelf.Guillotine.Insert(middleVerticalRect, _rectChoice, out freeRectIndex);
-                if (middleVerticalRect.IsPlaced)
+                shelf.Guillotine.Insert(middleVerticalRect, _rectChoice, out int freeRectIndex);
+                if (middleVerticalRect.IsPlaced
+                    && cuboid.AllowPlacing(middleVerticalRect.Width, middle, middleVerticalRect.Height))
                 {
                     shelf.Guillotine.InsertOnPosition(middleVerticalRect, _splitMethod, freeRectIndex);
                     cuboid.IsPlaced = true;
@@ -164,15 +162,14 @@ namespace Sharp3DBinPacking.Algorithms
                     return;
                 }
             }
-
             // Set cuboid's smallest egde vertically
             if (min <= shelf.Height &&
                 (_parameter.AllowRotateVertically || min == cuboid.Height))
             {
                 var minVerticalRect = new Rectangle(middle, max, 0, 0);
-                var freeRectIndex = 0;
-                shelf.Guillotine.Insert(minVerticalRect, _rectChoice, out freeRectIndex);
-                if (minVerticalRect.IsPlaced)
+                shelf.Guillotine.Insert(minVerticalRect, _rectChoice, out int freeRectIndex);
+                if (minVerticalRect.IsPlaced
+                    && cuboid.AllowPlacing(minVerticalRect.Width, min, minVerticalRect.Height))
                 {
                     shelf.Guillotine.InsertOnPosition(minVerticalRect, _splitMethod, freeRectIndex);
                     cuboid.IsPlaced = true;
@@ -184,7 +181,6 @@ namespace Sharp3DBinPacking.Algorithms
                     return;
                 }
             }
-
             // Place failed
         }
 
